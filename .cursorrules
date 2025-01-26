@@ -1,0 +1,85 @@
+# 규칙
+## 패키지 매니저
+- **패키지 매니저**: `pnpm`을 사용합니다.
+
+## UI 컴포넌트 생성
+- **ShadCN 컴포넌트를 우선적으로 활용합니다.**
+- **ShadCN 컴포넌트 추가 명령어**:
+  - CLI 명령어 예시: `pnpm dlx shadcn@latest add button`
+
+# Next.js Server Actions & API Routes 사용 지침
+이 지침은 **Next.js** 프로젝트에서 **Server Actions**와 **API Routes**를 어떻게 적절히 사용할지에 대한 안내입니다.
+
+## Next.js Server Actions
+- **간단한 데이터 작업** 또는 **기본 CRUD** 작업에 사용
+- DB 직접 접근이 필요한 경우 사용
+- 예시:
+  ```typescript
+  async function addItem(data: FormData) {
+    'use server';
+    // DB에 새로운 항목 추가
+  }
+  ```
+
+## Next.js API Routes
+- **복잡한 비즈니스 로직**이나 **외부 API 통신**에 사용
+- 에러 처리와 응답 형식의 일관성이 중요한 경우 사용
+- 예시:
+  ```typescript
+  // app/api/external/route.ts
+  export async function POST(request: Request) {
+    // 외부 API 호출 및 결과 가공
+  }
+  ```
+
+## 컴포넌트 작성 규칙
+- Props 타입은 항상 interface로 정의하고 `ComponentNameProps` 형식으로 명명
+  ```typescript
+  interface ButtonProps {
+    label: string;
+    onClick: () => void;
+  }
+  ```
+- 컴포넌트 파일명은 PascalCase 사용 (예: `CustomButton.tsx`)
+- 페이지 컴포넌트는 `page.tsx` 사용
+
+## 스타일 가이드
+- TailwindCSS 클래스 순서:
+  1. Layout (width, height, display)
+  2. Spacing (margin, padding)
+  3. Typography (font, text)
+  4. Colors (bg, text)
+  5. Effects (shadow, opacity)
+
+## 환경 변수
+- `.env.local`에서 관리
+- 타입 안전성을 위해 `env.mjs` 구성 권장
+  ```typescript
+  // env.mjs
+  export const env = {
+    DATABASE_URL: process.env.DATABASE_URL,
+    API_KEY: process.env.API_KEY,
+  } as const;
+  ```
+
+## Git 관련
+- 커밋 메시지 컨벤션:
+  - feat: 새로운 기능 추가
+  - fix: 버그 수정
+  - docs: 문서 수정
+  - style: 코드 포맷팅
+  - refactor: 코드 리팩토링
+  - test: 테스트 코드
+  - chore: 빌드 업무 수정
+
+## API 응답 형식
+```typescript
+interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+```
